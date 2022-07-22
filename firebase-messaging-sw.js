@@ -8,8 +8,7 @@ var firebaseConfig = {
   projectId: "sales-yang",
   storageBucket: "sales-yang.appspot.com",
   messagingSenderId: "998844496606",
-  appId: "1:998844496606:web:2eb09ffe5d323cf3e6204f",
-  measurementId: "G-JZVX693SGB"
+  appId: "1:998844496606:web:7427870db9ee3911e6204f"
 };
 
 // Initialize Firebase
@@ -21,7 +20,23 @@ messaging.setBackgroundMessageHandler(function(payload) {
   // Customize data here
   const title = payload.data.title;
   const options = {
-    body: payload.data.body
+    body: payload.data.body,
+    icon: payload.data.icon,
+    data: { url: payload.data.link },
   };
-  return self.registration.showNotification(title,options);
+  console.log(options);
+  return self.registration.showNotification(title, options);
+});
+
+self.addEventListener('notificationclick', function(event) {
+  console.log("notification open");
+  if (event.notification.data.url) {
+      event.notification.close();
+      clients.openWindow(event.notification.data.url);
+  }
+}, false);
+
+self.addEventListener("notificationclose", function(event) {
+  console.log("notification close");
+  // log send to server
 });
